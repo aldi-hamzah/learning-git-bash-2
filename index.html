@@ -1,10 +1,141 @@
-<!-- Inputan : <input type="text" id="inputan"> -->
-<input type="text" name="" id="yourName">
-<button onclick="test()">Button</button>
+<button onclick="main()">Silahkan Mencoba</button>
+<p id="str"></p>
 
 <script>
-    const test = () => {
-        let name = document.getElementById('yourName').value;
-        console.log(`Halo `+name);
+    const convertAngka = (string) => {
+        let number = null;
+        switch(string){
+            case "satu" : 
+                number = "1";
+                break;
+            case "dua" :
+                number = "2";
+                break;
+            case "tiga" :
+                number = "3";
+                break;
+            case "empat" :
+                number = "4";
+                break;
+            case "lima" :
+                number = "5";
+                break;
+            case "enam" :
+                number = "6";
+                break;
+            case "tujuh" :
+                number = "7";
+                break;
+            case "delapan" :
+                number = "8";
+                break;
+            default :
+                number = "9";
+        }
+        return number;
+    }
+
+    const ratusan = (angka) => {
+        angka = convertAngka(angka);
+        return angka = angka+"00";
+    }
+
+    const puluhan = (angka) => {
+        angka = convertAngka(angka);
+        return angka = angka+"0";
+    }
+
+    const belas = (angka) => {
+        angka = convertAngka(angka);
+        return angka = "1"+angka;
+    }
+
+    const convertOperator = (string) => {
+        let operator = null;
+        switch(string){
+            case "tambah" :
+                return operator = "+";
+                break;
+            case "kurang" :
+                return operator = "-";
+                break;
+            case "kali" :
+                return operator = "*";
+                break;
+            case "bagi" :
+                return operator = "/";
+                break;
+        }
+    }
+
+    const convert = (string) => {
+        const operator = ['tambah', 'kurang', 'kali', 'bagi'];
+        let angka = null;
+        let kalimatEval = [];
+        let x = null;
+        for(let i = 0; i < string.length; i++){
+            x = false;
+            string[i] = string[i].toLowerCase();
+            if(operator.indexOf(string[i]) === -1){
+                if(string[i+1] === 'ratus'){
+                    kalimatEval.push("(");
+                    angka = ratusan(string[i]);
+                    i++;
+                }
+                else if (string[i+1] === 'puluh'){
+                    if(string[i-1] !== 'ratus'){
+                        kalimatEval.push("(");
+                    }
+                    angka = puluhan(string[i]);
+                    i++;
+                }
+                else if(string[i+1] === 'belas'){
+                    if(operator.includes(string[i-1])) kalimatEval.push("(");
+                    if(string[i-1] !== 'ratus') kalimatEval.push("(");
+                    angka = belas(string[i]);
+                    i++;
+                }
+                else if(string[i] === 'seratus'){
+                    kalimatEval.push("(");
+                    angka = "100";
+                }
+                else if(string[i] === 'sepuluh'){
+                    kalimatEval.push("(");
+                    angka = "10";
+                }
+                else{
+                    if(operator.includes(string[i-1])|| string[i-1] === undefined ) kalimatEval.push("(");
+                    angka = convertAngka(string[i]);
+                    console.log(string[i-1]);
+                }
+                kalimatEval.push(angka);
+                if(operator.indexOf(string[i+1]) !== -1 || i === string.length-1){
+                    kalimatEval.push(")");
+                }
+                kalimatEval.push("+");
+            }
+            else {
+                kalimatEval.pop();
+                if(i > 3){
+                    if(x == true){
+                        if(kalimatEval.slice(-1) !== ")") kalimatEval.push(")");
+                    } 
+                }
+                
+                kalimatEval.push(convertOperator(string[i]));
+            }
+        }
+        kalimatEval.pop();
+        return kalimatEval;
+    }
+
+    const main = () => {
+        let string = prompt("Masukkan kalimat", "satu tambah satu");
+        const array = string.split(" ");
+        console.log(convert(array));
+        const result = eval(convert(array).join(" "));
+        alert(`${string} adalah ${result}`);
+        document.getElementById("str").innerHTML = `${string} adalah ${result}`;
+        console.log(result);
     }
 </script>
